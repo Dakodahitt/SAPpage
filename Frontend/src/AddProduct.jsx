@@ -6,7 +6,7 @@ const AddProduct = ({ onProductAdded }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [sizes, setSizes] = useState([{ size: '', quantity: '' }]);
+  const [sizes, setSizes] = useState([{ size: '', quantity: '', sapNumber: '' }]);
 
   const handleSizeChange = (index, key, value) => {
     const newSizes = sizes.slice();
@@ -15,7 +15,7 @@ const AddProduct = ({ onProductAdded }) => {
   };
 
   const addSizeField = () => {
-    setSizes([...sizes, { size: '', quantity: '' }]);
+    setSizes([...sizes, { size: '', quantity: '', sapNumber: '' }]);
   };
 
   const handleSubmit = async (e) => {
@@ -36,7 +36,7 @@ const AddProduct = ({ onProductAdded }) => {
         setName('');
         setDescription('');
         setPrice('');
-        setSizes([{ size: '', quantity: '' }]);
+        setSizes([{ size: '', quantity: '', sapNumber: '' }]);
       }
     } catch (error) {
       console.error('Error adding product:', error);
@@ -94,10 +94,10 @@ const AddProduct = ({ onProductAdded }) => {
               required
             />
             <input
-              type="number"
-              placeholder="Quantity"
-              value={size.quantity}
-              onChange={(e) => handleSizeChange(index, 'quantity', e.target.value)}
+              type="text"
+              placeholder="SAP Number"
+              value={size.sapNumber}
+              onChange={(e) => handleSizeChange(index, 'sapNumber', e.target.value)}
               required
             />
           </div>

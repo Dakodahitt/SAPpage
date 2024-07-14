@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Cart from './Cart';
 import Products from './Products';
 import AddProductPage from './AddProductPage';
+import ProductDetail from './ProductDetail';
 
 const App = () => {
   const [cart, setCart] = useState([]);
@@ -12,10 +13,10 @@ const App = () => {
 
   const addToCart = (product) => {
     setCart((prevCart) => {
-      const existingProduct = prevCart.find(item => item.id === product.id);
+      const existingProduct = prevCart.find(item => item.id === product.id && item.size.size === product.size.size);
       if (existingProduct) {
         return prevCart.map(item =>
-          item.id === product.id
+          item.id === product.id && item.size.size === product.size.size
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -25,7 +26,7 @@ const App = () => {
   };
 
   const handleProductAdded = (newProduct) => {
-    
+    // Logic to handle the addition of a new product, if needed
   };
 
   return (
@@ -68,6 +69,10 @@ const App = () => {
           <Route
             path="/add-product"
             element={<AddProductPage onProductAdded={handleProductAdded} />}
+          />
+          <Route
+            path="/products/:id"
+            element={<ProductDetail addToCart={addToCart} />}
           />
         </Routes>
       </div>

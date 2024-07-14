@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Products = ({ addToCart }) => {
   const [products, setProducts] = useState([]);
@@ -18,6 +19,7 @@ const Products = ({ addToCart }) => {
   }, []);
 
   const handleDelete = async (id) => {
+    console.log(`Deleting product with ID: ${id}`); // Log the ID
     try {
       await axios.delete(`http://localhost:3000/products/${id}`);
       setProducts(products.filter(product => product.id !== id));
@@ -32,8 +34,8 @@ const Products = ({ addToCart }) => {
       <ul>
         {products.map((product, index) => (
           <li key={index}>
-            {product.itemNumber} - {product.name} ({product.size}) - ${product.price}
-            <button onClick={() => addToCart(product)}>Add to Cart</button>
+            {product.itemNumber} - {product.name} - ${product.price}
+            <Link to={`/products/${product.id}`}>View Details</Link>
             <button onClick={() => handleDelete(product.id)}>Delete</button>
           </li>
         ))}
