@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const AddProduct = ({ onProductAdded }) => {
-  const [itemNumber, setItemNumber] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [sizes, setSizes] = useState([{ size: '', sapNumber: '' }]);
+  const [image, setImage] = useState(null);
 
   const handleSizeChange = (index, key, value) => {
     const newSizes = sizes.slice();
@@ -18,25 +18,39 @@ const AddProduct = ({ onProductAdded }) => {
     setSizes([...sizes, { size: '', sapNumber: '' }]);
   };
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('price', price);
+    sizes.forEach((size, index) => {
+      formData.append(`sizes[${index}][size]`, size.size);
+      formData.append(`sizes[${index}][sapNumber]`, size.sapNumber);
+    });
+    if (image) {
+      formData.append('image', image);
+    }
+
     try {
-      const response = await axios.post('http://localhost:3000/products', {
-        itemNumber,
-        name,
-        description,
-        price,
-        sizes,
+      const response = await axios.post('http://localhost:3000/products', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       if (response.status === 201) {
         onProductAdded(response.data);
-        setItemNumber('');
         setName('');
         setDescription('');
         setPrice('');
         setSizes([{ size: '', sapNumber: '' }]);
+        setImage(null);
       }
     } catch (error) {
       console.error('Error adding product:', error);
@@ -45,15 +59,6 @@ const AddProduct = ({ onProductAdded }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label>Item Number:</label>
-        <input
-          type="text"
-          value={itemNumber}
-          onChange={(e) => setItemNumber(e.target.value)}
-          required
-        />
-      </div>
       <div>
         <label>Name:</label>
         <input
@@ -80,6 +85,13 @@ const AddProduct = ({ onProductAdded }) => {
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           required
+        />
+      </div>
+      <div>
+        <label>Image:</label>
+        <input
+          type="file"
+          onChange={handleImageChange}
         />
       </div>
       <div>

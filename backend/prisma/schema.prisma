@@ -23,6 +23,7 @@ model Product {
   name        String
   description String
   price       Float
+  image       String?
   sizes       ProductSize[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt

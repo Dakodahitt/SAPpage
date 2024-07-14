@@ -34,6 +34,7 @@ const Products = ({ addToCart }) => {
       <ul>
         {products.map((product, index) => (
           <li key={index}>
+            {product.image && <img src={product.image} alt={product.name} width="100" />}
             {product.itemNumber} - {product.name} - ${product.price}
             <Link to={`/products/${product.id}`}>View Details</Link>
             <button onClick={() => handleDelete(product.id)}>Delete</button>

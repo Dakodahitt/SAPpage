@@ -42,7 +42,7 @@ const Cart = ({ cart, setCart, creator, setCreator, date, setDate, patrol, setPa
       <ul>
         {cart.map((item, index) => (
           <li key={index}>
-            {item.description} - {item.size.size} - SAP: {item.size.sapNumber} - ${item.price} x {item.quantity}
+            Size: {item.size.size} - SAP: {item.size.sapNumber} - ${item.price} x {item.quantity}
             <button onClick={() => handleDelete(index)}>Delete</button>
           </li>
         ))}
