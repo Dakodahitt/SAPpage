@@ -1,123 +1,129 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Navbar from './Navbar';
+import './AddProduct.css';
 
 const AddProduct = ({ onProductAdded }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [sizes, setSizes] = useState([{ size: '', sapNumber: '' }]);
-  const [image, setImage] = useState(null);
 
-  const handleSizeChange = (index, key, value) => {
-    const newSizes = sizes.slice();
-    newSizes[index][key] = value;
-    setSizes(newSizes);
-  };
-
-  const addSizeField = () => {
+  const handleAddSize = () => {
     setSizes([...sizes, { size: '', sapNumber: '' }]);
   };
 
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+  const handleSizeChange = (index, field, value) => {
+    const newSizes = [...sizes];
+    newSizes[index][field] = value;
+    setSizes(newSizes);
+  };
+
+  const handleRemoveSize = (index) => {
+    const newSizes = [...sizes];
+    newSizes.splice(index, 1);
+    setSizes(newSizes);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('description', description);
-    formData.append('price', price);
-    sizes.forEach((size, index) => {
-      formData.append(`sizes[${index}][size]`, size.size);
-      formData.append(`sizes[${index}][sapNumber]`, size.sapNumber);
-    });
-    if (image) {
-      formData.append('image', image);
-    }
-
     try {
-      const response = await axios.post('http://localhost:3000/products', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const newProduct = {
+        name,
+        description,
+        price: parseFloat(price),
+        imageUrl,
+        sizes,
+      };
 
-      if (response.status === 201) {
-        onProductAdded(response.data);
-        setName('');
-        setDescription('');
-        setPrice('');
-        setSizes([{ size: '', sapNumber: '' }]);
-        setImage(null);
-      }
+      const response = await axios.post('http://localhost:3000/products', newProduct);
+      onProductAdded(response.data);
+
+      // Clear the form
+      setName('');
+      setDescription('');
+      setPrice('');
+      setImageUrl('');
+      setSizes([{ size: '', sapNumber: '' }]);
     } catch (error) {
-      console.error('Error adding product:', error);
+      console.error('Error creating product:', error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Name:</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Description:</label>
-        <input
-          type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Price:</label>
-        <input
-          type="number"
-          step="0.01"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Image:</label>
-        <input
-          type="file"
-          onChange={handleImageChange}
-        />
-      </div>
-      <div>
-        <label>Sizes:</label>
-        {sizes.map((size, index) => (
-          <div key={index}>
-            <input
-              type="text"
-              placeholder="Size"
-              value={size.size}
-              onChange={(e) => handleSizeChange(index, 'size', e.target.value)}
-              required
-            />
-            <input
-              type="text"
-              placeholder="SAP Number"
-              value={size.sapNumber}
-              onChange={(e) => handleSizeChange(index, 'sapNumber', e.target.value)}
-              required
-            />
+    <>
+      <Navbar />
+      <div className="add-product-container">
+        <h2>Add Product</h2>
+        <form onSubmit={handleSubmit}>
+          <label>Name</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+
+          <label>Description</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+
+          <label>Price</label>
+          <input
+            type="number"
+            step="0.01"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            required
+          />
+
+          <label>Image URL</label>
+          <input
+            type="text"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            required
+          />
+
+          <h3>Sizes</h3>
+          {sizes.map((size, index) => (
+            <div key={index}>
+              <label>Size</label>
+              <input
+                type="text"
+                value={size.size}
+                onChange={(e) => handleSizeChange(index, 'size', e.target.value)}
+                required
+              />
+              <label>SAP Number</label>
+              <input
+                type="text"
+                value={size.sapNumber}
+                onChange={(e) => handleSizeChange(index, 'sapNumber', e.target.value)}
+                required
+              />
+              {sizes.length > 1 && (
+                <button type="button" onClick={() => handleRemoveSize(index)}>
+                  Remove Size
+                </button>
+              )}
+            </div>
+          ))}
+          <div className="button-group">
+            <button type="button" onClick={handleAddSize}>
+              Add Size
+            </button>
+
+            <button type="submit">Add Product</button>
           </div>
-        ))}
-        <button type="button" onClick={addSizeField}>Add Size</button>
+        </form>
       </div>
-      <button type="submit">Add Product</button>
-    </form>
+    </>
   );
 };
 

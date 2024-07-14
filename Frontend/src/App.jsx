@@ -1,81 +1,48 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Cart from './Cart';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Products from './Products';
-import AddProductPage from './AddProductPage';
+import Cart from './Cart';
+import AddProduct from './AddProduct';
 import ProductDetail from './ProductDetail';
 
 const App = () => {
-  const [cart, setCart] = useState([]);
-  const [creator, setCreator] = useState('');
-  const [date, setDate] = useState('');
-  const [patrol, setPatrol] = useState('');
+  const [cart, setCart] = React.useState([]);
+  const [creator, setCreator] = React.useState('');
+  const [date, setDate] = React.useState('');
+  const [patrol, setPatrol] = React.useState('');
 
   const addToCart = (product) => {
-    setCart((prevCart) => {
-      const existingProduct = prevCart.find(item => item.id === product.id && item.size.size === product.size.size);
-      if (existingProduct) {
-        return prevCart.map(item =>
-          item.id === product.id && item.size.size === product.size.size
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prevCart, { ...product, quantity: 1 }];
-    });
-  };
+    const existingProductIndex = cart.findIndex(
+      (item) => item.id === product.id && item.size === product.size && item.sapNumber === product.sapNumber
+    );
 
-  const handleProductAdded = (newProduct) => {
-    // Logic to handle the addition of a new product, if needed
+    if (existingProductIndex >= 0) {
+      const updatedCart = [...cart];
+      updatedCart[existingProductIndex].quantity += 1;
+      setCart(updatedCart);
+    } else {
+      setCart([...cart, product]);
+    }
   };
 
   return (
     <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Cart</Link>
-            </li>
-            <li>
-              <Link to="/products">Products</Link>
-            </li>
-            <li>
-              <Link to="/add-product">Add Product</Link>
-            </li>
-          </ul>
-        </nav>
-
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Cart
-                cart={cart}
-                setCart={setCart}
-                creator={creator}
-                setCreator={setCreator}
-                date={date}
-                setDate={setDate}
-                patrol={patrol}
-                setPatrol={setPatrol}
-              />
-            }
-          />
-          <Route
-            path="/products"
-            element={<Products addToCart={addToCart} />}
-          />
-          <Route
-            path="/add-product"
-            element={<AddProductPage onProductAdded={handleProductAdded} />}
-          />
-          <Route
-            path="/products/:id"
-            element={<ProductDetail addToCart={addToCart} />}
-          />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/cart" element={<Cart 
+                                        cart={cart} 
+                                        setCart={setCart} 
+                                        creator={creator} 
+                                        setCreator={setCreator} 
+                                        date={date} 
+                                        setDate={setDate} 
+                                        patrol={patrol} 
+                                        setPatrol={setPatrol} 
+                                      />} />
+        <Route path="/products" element={<Products addToCart={addToCart} />} />
+        <Route path="/add-product" element={<AddProduct onProductAdded={(newProduct) => setCart([...cart, newProduct])} />} />
+        <Route path="/products/:id" element={<ProductDetail addToCart={addToCart} />} />
+        <Route path="/" element={<Products addToCart={addToCart} />} />
+      </Routes>
     </Router>
   );
 };

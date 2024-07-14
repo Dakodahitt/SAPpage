@@ -21,7 +21,6 @@ app.use(express.json());
 
 // Serve static files from the "public" directory
 app.use(express.static("public"));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
   res.send("E-commerce Backend");
@@ -57,19 +56,17 @@ app.get("/products/:id", async (req, res) => {
   }
 });
 
-// Route to add a new product with an image
-app.post("/products", upload.single("image"), async (req, res) => {
-  const { itemNumber, name, description, price, sizes } = req.body;
-  const image = req.file ? `/uploads/${req.file.filename}` : null;
+// Route to add a new product
+app.post("/products", async (req, res) => {
+  const { name, description, price, imageUrl, sizes } = req.body;
 
   try {
     const newProduct = await prisma.product.create({
       data: {
-        itemNumber,
         name,
         description,
         price: parseFloat(price),
-        image,
+        image: imageUrl,
         sizes: {
           create: sizes.map((size) => ({
             size: size.size,
@@ -108,14 +105,7 @@ app.post("/export-cart", async (req, res) => {
   const { cart, creator, date, patrol } = req.body;
 
   const doc = new PDFDocument({ margin: 50 });
-  const currentDate = new Date();
-  const formattedDate = `${(currentDate.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}-${currentDate
-    .getDate()
-    .toString()
-    .padStart(2, "0")}-${currentDate.getFullYear()}`;
-  const fileName = `Order_${formattedDate}.pdf`;
+  const fileName = `cart_${new Date().toISOString().slice(0, 10)}.pdf`;
   const filePath = path.join(__dirname, "public", fileName);
   doc.pipe(fs.createWriteStream(filePath));
 
@@ -134,8 +124,14 @@ app.post("/export-cart", async (req, res) => {
 
   // Add Table Headers
   doc.moveDown(1);
-  const headers = ["SAP #", "Name", "Size", "Price", "Quantity"];
-  const positions = [50, 120, 350, 425, 500]; // Adjust positions as necessary
+  const headers = [
+    "SAP #",
+    "Description",
+    "Size",
+    "Price",
+    "Quantity",
+  ];
+  const positions = [50, 150, 250, 350, 450, 520]; // Adjust positions as necessary
 
   headers.forEach((header, index) => {
     doc.text(header, positions[index], doc.y, { align: "left" });
@@ -145,7 +141,7 @@ app.post("/export-cart", async (req, res) => {
 
   // Draw a line below headers
   const lineY = doc.y;
-  doc.moveTo(50, lineY).lineTo(550, lineY).stroke();
+  doc.moveTo(50, lineY).lineTo(570, lineY).stroke();
 
   // Add Table Rows with fixed Y positioning
   const lineHeight = 20; // Adjust the line height as necessary
@@ -154,10 +150,11 @@ app.post("/export-cart", async (req, res) => {
 
   cart.forEach((item, rowIndex) => {
     const y = lineY + lineHeight * (rowIndex + 1);
-    doc.text(item.size.sapNumber, positions[0], y, { align: "left" });
+    doc.text(item.sapNumber, positions[0], y, { align: "left" });
     doc.text(item.name, positions[1], y, { align: "left" });
-    doc.text(item.size.size, positions[2], y, { align: "left" });
-    doc.text(item.price, positions[3], y, { align: "left" });
+    doc.text(item.size, positions[2], y, { align: "left" });
+
+    doc.text(item.price.toFixed(2), positions[3], y, { align: "left" });
     doc.text(item.quantity, positions[4], y, { align: "left" });
 
     totalPrice += item.price * item.quantity;
@@ -165,9 +162,7 @@ app.post("/export-cart", async (req, res) => {
 
   // Add total price at the bottom
   doc.moveDown(2);
-  doc
-    .fontSize(12)
-    .text(`Total Price: $${totalPrice.toFixed(2)}`, { align: "right" });
+  doc.fontSize(12).text(`Total Price: $${totalPrice.toFixed(2)}`, { align: 'right' });
 
   // Finalize PDF file
   doc.end();

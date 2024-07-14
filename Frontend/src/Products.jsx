@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import Navbar from './Navbar';
+import './Products.css';
 
 const Products = ({ addToCart }) => {
   const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('All');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -28,20 +32,44 @@ const Products = ({ addToCart }) => {
     }
   };
 
+  const filteredProducts = products.filter(product => 
+    product.name.toLowerCase().includes(search.toLowerCase()) &&
+    (category === 'All' || product.category === category)
+  );
+
   return (
-    <div>
-      <h1>All Products</h1>
-      <ul>
-        {products.map((product, index) => (
-          <li key={index}>
-            {product.image && <img src={product.image} alt={product.name} width="100" />}
-            {product.itemNumber} - {product.name} - ${product.price}
-            <Link to={`/products/${product.id}`}>View Details</Link>
-            <button onClick={() => handleDelete(product.id)}>Delete</button>
-          </li>
+    <>
+      <Navbar />
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search for items..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value="All">All</option>
+          <option value="Category1">Category1</option>
+          <option value="Category2">Category2</option>
+          <option value="Category3">Category3</option>
+        </select>
+        <button>Search</button>
+      </div>
+      <div className="products-container">
+        {filteredProducts.map((product, index) => (
+          <div key={index} className="product-item">
+            <Link to={`/products/${product.id}`}>
+              {product.image && <img src={product.image} alt={product.name} />}
+            </Link>
+            <h2>{product.name}</h2>
+            <p>${product.price.toFixed(2)}</p>
+            <div>
+              <button onClick={() => handleDelete(product.id)}>Delete</button>
+            </div>
+          </div>
         ))}
-      </ul>
-    </div>
+      </div>
+    </>
   );
 };
 
