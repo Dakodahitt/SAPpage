@@ -6,7 +6,7 @@ const AddProduct = ({ onProductAdded }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [sizes, setSizes] = useState([{ size: '', quantity: '', sapNumber: '' }]);
+  const [sizes, setSizes] = useState([{ size: '', sapNumber: '' }]);
 
   const handleSizeChange = (index, key, value) => {
     const newSizes = sizes.slice();
@@ -15,7 +15,7 @@ const AddProduct = ({ onProductAdded }) => {
   };
 
   const addSizeField = () => {
-    setSizes([...sizes, { size: '', quantity: '', sapNumber: '' }]);
+    setSizes([...sizes, { size: '', sapNumber: '' }]);
   };
 
   const handleSubmit = async (e) => {
@@ -36,7 +36,7 @@ const AddProduct = ({ onProductAdded }) => {
         setName('');
         setDescription('');
         setPrice('');
-        setSizes([{ size: '', quantity: '', sapNumber: '' }]);
+        setSizes([{ size: '', sapNumber: '' }]);
       }
     } catch (error) {
       console.error('Error adding product:', error);

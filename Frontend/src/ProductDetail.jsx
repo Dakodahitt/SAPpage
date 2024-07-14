@@ -31,7 +31,7 @@ const ProductDetail = ({ addToCart }) => {
       <ul>
         {product.sizes.map((size, index) => (
           <li key={index}>
-            Size: {size.size}, Quantity: {size.quantity}, SAP Number: {size.sapNumber}
+            Size: {size.size}, SAP Number: {size.sapNumber}
             <button onClick={() => addToCart({ ...product, size })}>Add to Cart</button>
           </li>
         ))}

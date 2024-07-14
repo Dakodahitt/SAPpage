@@ -68,7 +68,6 @@ app.post('/products', async (req, res) => {
         sizes: {
           create: sizes.map(size => ({
             size: size.size,
-            quantity: parseInt(size.quantity),
             sapNumber: size.sapNumber,
           })),
         },
@@ -103,7 +102,7 @@ app.post('/export-cart', async (req, res) => {
 
   const doc = new PDFDocument();
   const fileName = `cart_${Date.now()}.pdf`;
-  const filePath = path.join(publicDir, fileName);
+  const filePath = path.join(__dirname, 'public', fileName);
   doc.pipe(fs.createWriteStream(filePath));
 
   // Add Title
@@ -112,7 +111,7 @@ app.post('/export-cart', async (req, res) => {
   doc.fontSize(12).text('Use MM60 to find item # make sure you order it out of plan 1001', { align: 'center' });
 
   doc.moveDown(2);
-  doc.fontSize(10).text(`Requestors Name: ${creator}`, { align: 'left' });
+  doc.fontSize(10).text(`Requestor's Name: ${creator}`, { align: 'left' });
   doc.text(`Date: ${date}`, { align: 'right' });
 
   doc.moveDown();
@@ -120,30 +119,31 @@ app.post('/export-cart', async (req, res) => {
 
   // Add Table Headers
   doc.moveDown(1);
-  doc.fontSize(10).text('item #', 50, doc.y, { width: 80, align: 'left' });
-  doc.text('Description', 130, doc.y, { width: 200, align: 'left' });
-  doc.text('UNIT', 330, doc.y, { width: 50, align: 'left' });
-  doc.text('PRICE', 380, doc.y, { width: 50, align: 'left' });
-  doc.text('Quantity', 430, doc.y, { width: 50, align: 'left' });
+  const headers = ['Item #', 'Description', 'Size', 'SAP #', 'Price', 'Quantity'];
+  const positions = [50, 120, 250, 300, 380, 450]; // Adjust positions as necessary
+
+  headers.forEach((header, index) => {
+    doc.text(header, positions[index], doc.y, { align: 'left' });
+  });
 
   doc.moveDown(0.5);
 
   // Draw a line below headers
   doc.moveTo(50, doc.y)
-    .lineTo(480, doc.y)
+    .lineTo(580, doc.y)
     .stroke();
 
   // Add Table Rows
   cart.forEach((item, index) => {
     doc.moveDown(0.5);
-    doc.text(item.itemNumber, 50, doc.y, { width: 80, align: 'left' });
-    doc.text(item.description, 130, doc.y, { width: 200, align: 'left' });
-    doc.text(item.unit, 330, doc.y, { width: 50, align: 'left' });
-    doc.text(item.price, 380, doc.y, { width: 50, align: 'left' });
-    doc.text(item.quantity, 430, doc.y, { width: 50, align: 'left' });
+    doc.text(item.itemNumber, positions[0], doc.y, { align: 'left' });
+    doc.text(item.description, positions[1], doc.y, { align: 'left' });
+    doc.text(item.size.size, positions[2], doc.y, { align: 'left' });
+    doc.text(item.size.sapNumber, positions[3], doc.y, { align: 'left' });
+    doc.text(item.price, positions[4], doc.y, { align: 'left' });
+    doc.text(item.quantity, positions[5], doc.y, { align: 'left' });
   });
 
-  
   // Finalize PDF file
   doc.end();
 
