@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import Navbar from './Navbar';
 import './AddProduct.css';
 
 const AddProduct = ({ onProductAdded }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [sizes, setSizes] = useState([{ size: '', sapNumber: '', price: '' }]);
 
@@ -32,25 +32,20 @@ const AddProduct = ({ onProductAdded }) => {
       const newProduct = {
         name,
         description,
-        price: parseFloat(price),
         imageUrl,
         sizes,
       };
 
-      const response = await fetch('https://sappage.onrender.com/products', {
-        method: 'POST',
+      const response = await axios.post('https://sappage.onrender.com/products', newProduct, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newProduct),
       });
-      const data = await response.json();
-      onProductAdded(data);
+      onProductAdded(response.data);
 
       // Clear the form
       setName('');
       setDescription('');
-      setPrice('');
       setImageUrl('');
       setSizes([{ size: '', sapNumber: '', price: '' }]);
     } catch (error) {
@@ -76,15 +71,6 @@ const AddProduct = ({ onProductAdded }) => {
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-
-          <label>Price</label>
-          <input
-            type="number"
-            step="0.01"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
             required
           />
 

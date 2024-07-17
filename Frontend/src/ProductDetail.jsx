@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axiosInstance from './axiosConfig';
+import axios from 'axios';
 import Navbar from './Navbar';
 import './ProductDetail.css';
 
@@ -13,7 +13,7 @@ const ProductDetail = ({ addToCart }) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axiosInstance.get(`/products/${id}`);
+        const response = await axios.get(`https://sappage.onrender.com/products/${id}`);
         setProduct(response.data);
       } catch (error) {
         console.error('Error fetching product:', error);
@@ -51,7 +51,6 @@ const ProductDetail = ({ addToCart }) => {
         <h1>{product.name}</h1>
         <img src={product.image} alt={product.name} />
         <p>{product.description}</p>
-        <p>Base Price: ${product.price.toFixed(2)}</p>
         <div>
           <label htmlFor="size">Select Size:</label>
           <select id="size" value={selectedSize} onChange={handleSizeChange}>
