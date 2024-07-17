@@ -19,7 +19,7 @@ const Cart = ({ cart, setCart, creator, setCreator, date, setDate, patrol, setPa
         body: JSON.stringify({ cart, creator, date, patrol })
       });
       const data = await response.json();
-      window.open(`http://localhost:3000/${data.file}`);
+      window.open(`https://sappage.onrender.com/${data.file}`);
     } catch (error) {
       console.error('Error exporting cart:', error);
     }
