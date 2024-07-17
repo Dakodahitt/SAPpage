@@ -71,6 +71,7 @@ app.post("/products", async (req, res) => {
           create: sizes.map((size) => ({
             size: size.size,
             sapNumber: size.sapNumber,
+            price: parseFloat(size.price),
           })),
         },
       },
@@ -125,9 +126,10 @@ app.post("/export-cart", async (req, res) => {
   // Add Table Headers
   doc.moveDown(1);
   const headers = [
-    "SAP #",
+    "Item #",
     "Description",
     "Size",
+    "SAP #",
     "Price",
     "Quantity",
   ];
@@ -150,12 +152,12 @@ app.post("/export-cart", async (req, res) => {
 
   cart.forEach((item, rowIndex) => {
     const y = lineY + lineHeight * (rowIndex + 1);
-    doc.text(item.sapNumber, positions[0], y, { align: "left" });
+    doc.text(item.id, positions[0], y, { align: "left" });
     doc.text(item.name, positions[1], y, { align: "left" });
     doc.text(item.size, positions[2], y, { align: "left" });
-
-    doc.text(item.price.toFixed(2), positions[3], y, { align: "left" });
-    doc.text(item.quantity, positions[4], y, { align: "left" });
+    doc.text(item.sapNumber, positions[3], y, { align: "left" });
+    doc.text(item.price.toFixed(2), positions[4], y, { align: "left" });
+    doc.text(item.quantity, positions[5], y, { align: "left" });
 
     totalPrice += item.price * item.quantity;
   });
