@@ -25,7 +25,7 @@ const Products = ({ addToCart }) => {
   const handleDelete = async (id) => {
     console.log(`Deleting product with ID: ${id}`); // Log the ID
     try {
-      await axios.delete(`http://localhost:3000/products/${id}`);
+      await axios.delete(`https://sappage.onrender.com/products/${id}`);
       setProducts(products.filter(product => product.id !== id));
     } catch (error) {
       console.error('Error deleting product:', error);
