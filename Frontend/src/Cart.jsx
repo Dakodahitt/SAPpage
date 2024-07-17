@@ -1,5 +1,4 @@
 import React from 'react';
-import axiosInstance from './axiosConfig'; // Updated import
 import Navbar from './Navbar';
 import './Cart.css';
 
@@ -12,16 +11,33 @@ const Cart = ({ cart, setCart, creator, setCreator, date, setDate, patrol, setPa
 
   const handleExport = async () => {
     try {
-      const response = await axiosInstance.post('/export-cart', {
-        cart,
-        creator,
-        date,
-        patrol,
+      const response = await fetch('https://sappage.onrender.com/export-cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ cart, creator, date, patrol })
       });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+
       const data = await response.json();
-      window.open(`https://sappage.onrender.com/${data.file}`);
+
+      if (!data.file) {
+        throw new Error('No file path returned from server');
+      }
+
+      const link = document.createElement('a');
+      link.href = `https://sappage.onrender.com/${data.file}`;
+      link.download = 'cart.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error('Error exporting cart:', error);
+      alert('There was an error exporting the cart. Please try again.');
     }
   };
 
