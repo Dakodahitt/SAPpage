@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import Navbar from './Navbar';
 import './AddProduct.css';
 
@@ -8,10 +7,10 @@ const AddProduct = ({ onProductAdded }) => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [sizes, setSizes] = useState([{ size: '', sapNumber: '' }]);
+  const [sizes, setSizes] = useState([{ size: '', sapNumber: '', price: '' }]);
 
   const handleAddSize = () => {
-    setSizes([...sizes, { size: '', sapNumber: '' }]);
+    setSizes([...sizes, { size: '', sapNumber: '', price: '' }]);
   };
 
   const handleSizeChange = (index, field, value) => {
@@ -38,15 +37,22 @@ const AddProduct = ({ onProductAdded }) => {
         sizes,
       };
 
-      const response = await axios.post('http://localhost:3000/products', newProduct);
-      onProductAdded(response.data);
+      const response = await fetch('https://sappage.onrender.com/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProduct),
+      });
+      const data = await response.json();
+      onProductAdded(data);
 
       // Clear the form
       setName('');
       setDescription('');
       setPrice('');
       setImageUrl('');
-      setSizes([{ size: '', sapNumber: '' }]);
+      setSizes([{ size: '', sapNumber: '', price: '' }]);
     } catch (error) {
       console.error('Error creating product:', error);
     }
@@ -92,7 +98,7 @@ const AddProduct = ({ onProductAdded }) => {
 
           <h3>Sizes</h3>
           {sizes.map((size, index) => (
-            <div key={index}>
+            <div key={index} className="size-container">
               <label>Size</label>
               <input
                 type="text"
@@ -105,6 +111,14 @@ const AddProduct = ({ onProductAdded }) => {
                 type="text"
                 value={size.sapNumber}
                 onChange={(e) => handleSizeChange(index, 'sapNumber', e.target.value)}
+                required
+              />
+              <label>Price</label>
+              <input
+                type="number"
+                step="0.01"
+                value={size.price}
+                onChange={(e) => handleSizeChange(index, 'price', e.target.value)}
                 required
               />
               {sizes.length > 1 && (
