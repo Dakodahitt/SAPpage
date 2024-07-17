@@ -38,7 +38,7 @@ const AddProduct = ({ onProductAdded }) => {
         sizes,
       };
 
-      const response = await axios.post('http://localhost:3000/products', newProduct);
+      const response = await axios.post('https://sappage.onrender.com/products', newProduct);
       onProductAdded(response.data);
 
       // Clear the form
