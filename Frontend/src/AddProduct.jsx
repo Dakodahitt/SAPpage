@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from './axiosConfig'; // Updated import
 import Navbar from './Navbar';
 import './AddProduct.css';
 
@@ -38,7 +38,7 @@ const AddProduct = ({ onProductAdded }) => {
         sizes,
       };
 
-      const response = await axios.post('https://sappage.onrender.com/products', newProduct);
+      const response = await axiosInstance.post('/products', newProduct);
       onProductAdded(response.data);
 
       // Clear the form
