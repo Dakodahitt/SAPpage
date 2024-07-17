@@ -11,7 +11,7 @@ const Cart = ({ cart, setCart, creator, setCreator, date, setDate, patrol, setPa
 
   const handleExport = async () => {
     try {
-      const response = await fetch('http://localhost:3000/export-cart', {
+      const response = await fetch('https://sappage.onrender.com/export-cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ const Cart = ({ cart, setCart, creator, setCreator, date, setDate, patrol, setPa
         body: JSON.stringify({ cart, creator, date, patrol })
       });
       const data = await response.json();
-      window.open(`http://localhost:3000/${data.file}`);
+      window.open(`https://sappage.onrender.com/${data.file}`);
     } catch (error) {
       console.error('Error exporting cart:', error);
     }
