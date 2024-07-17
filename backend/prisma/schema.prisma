@@ -22,5 +22,5 @@ model Size {
   sapNumber String
   price     Float
   productId Int
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade) // Ensure cascading delete
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
