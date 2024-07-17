@@ -1,5 +1,4 @@
 import React from 'react';
-import axiosInstance from './axiosConfig'; // Updated import
 import Navbar from './Navbar';
 import './Cart.css';
 
@@ -12,14 +11,15 @@ const Cart = ({ cart, setCart, creator, setCreator, date, setDate, patrol, setPa
 
   const handleExport = async () => {
     try {
-      const response = await axiosInstance.post('/export-cart', {
-        cart,
-        creator,
-        date,
-        patrol,
+      const response = await fetch('http://localhost:3000/export-cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ cart, creator, date, patrol })
       });
       const data = await response.json();
-      window.open(`https://sappage.onrender.com/${data.file}`);
+      window.open(`http://localhost:3000/${data.file}`);
     } catch (error) {
       console.error('Error exporting cart:', error);
     }
