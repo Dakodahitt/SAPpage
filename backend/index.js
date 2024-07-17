@@ -113,7 +113,6 @@ app.post("/export-cart", async (req, res) => {
   doc.fontSize(16).text("Store Room Order", { align: "center" });
   doc.moveDown();
 
-  doc.moveDown(2);
   doc
     .fontSize(10)
     .text(`Requestor's Name: ${creator}`, 50, doc.y, { align: "left" });
@@ -124,13 +123,7 @@ app.post("/export-cart", async (req, res) => {
 
   // Add Table Headers
   doc.moveDown(1);
-  const headers = [
-    "SAP #",
-    "Description",
-    "Size",
-    "Price",
-    "Quantity",
-  ];
+  const headers = ["SAP #", "Description", "Size", "Price", "Quantity"];
   const positions = [50, 150, 250, 350, 450, 520]; // Adjust positions as necessary
 
   headers.forEach((header, index) => {
@@ -162,7 +155,7 @@ app.post("/export-cart", async (req, res) => {
 
   // Add total price at the bottom
   doc.moveDown(2);
-  doc.fontSize(12).text(`Total Price: $${totalPrice.toFixed(2)}`, { align: 'right' });
+  doc.fontSize(12).text(`Total Price: $${totalPrice.toFixed(2)}`, { align: "right" });
 
   // Finalize PDF file
   doc.end();
