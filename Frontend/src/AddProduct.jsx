@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axiosInstance from './axiosConfig'; // Updated import
+import axios from 'axios';
 import Navbar from './Navbar';
 import './AddProduct.css';
 
@@ -38,7 +38,7 @@ const AddProduct = ({ onProductAdded }) => {
         sizes,
       };
 
-      const response = await axiosInstance.post('/products', newProduct);
+      const response = await axios.post('http://localhost:3000/products', newProduct);
       onProductAdded(response.data);
 
       // Clear the form
