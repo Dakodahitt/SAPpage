@@ -1,3 +1,106 @@
+const express = require("express");
+const cors = require("cors");
+const { PrismaClient } = require("@prisma/client");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
+
+const upload = multer({ dest: "uploads/" });
+const prisma = new PrismaClient();
+const app = express();
+
+// Ensure the public directory exists
+const publicDir = path.join(__dirname, "public");
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir);
+}
+
+app.use(cors());
+app.use(express.json());
+
+// Serve static files from the "public" directory
+app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+  res.send("E-commerce Backend");
+});
+
+// Route to get all products
+app.get("/products", async (req, res) => {
+  try {
+    const products = await prisma.product.findMany({
+      include: { sizes: true },
+    });
+    res.json(products);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/products/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id: parseInt(id) },
+      include: { sizes: true },
+    });
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    res.json(product);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Route to add a new product
+app.post("/products", async (req, res) => {
+  const { name, description, imageUrl, sizes } = req.body;
+
+  try {
+    const newProduct = await prisma.product.create({
+      data: {
+        name,
+        description,
+        image: imageUrl,
+        sizes: {
+          create: sizes.map((size) => ({
+            size: size.size,
+            sapNumber: size.sapNumber,
+            price: parseFloat(size.price) || 0,
+          })),
+        },
+      },
+    });
+
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.error("Error creating product:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Route to delete a product
+app.delete("/products/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log(`Deleting product with ID: ${id}`);
+
+  try {
+    await prisma.product.delete({
+      where: { id: parseInt(id) },
+    });
+
+    res.status(204).send();
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Route to export cart to PDF
 app.post("/export-cart", async (req, res) => {
   const { cart, creator, date, patrol } = req.body;
 
