@@ -70,7 +70,7 @@ app.post("/products", async (req, res) => {
           create: sizes.map((size) => ({
             size: size.size,
             sapNumber: size.sapNumber,
-            price: parseFloat(size.price),
+            price: parseFloat(size.price) || 0,
           })),
         },
       },
@@ -113,6 +113,7 @@ app.post("/export-cart", async (req, res) => {
   doc.fontSize(16).text("Store Room Order", { align: "center" });
   doc.moveDown();
 
+  doc.moveDown(2);
   doc
     .fontSize(10)
     .text(`Requestor's Name: ${creator}`, 50, doc.y, { align: "left" });
@@ -123,7 +124,14 @@ app.post("/export-cart", async (req, res) => {
 
   // Add Table Headers
   doc.moveDown(1);
-  const headers = ["Item #", "Description", "Size", "SAP #", "Price", "Quantity"];
+  const headers = [
+    "Item #",
+    "Description",
+    "Size",
+    "SAP #",
+    "Price",
+    "Quantity",
+  ];
   const positions = [50, 150, 250, 350, 450, 520]; // Adjust positions as necessary
 
   headers.forEach((header, index) => {
