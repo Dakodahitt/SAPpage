@@ -134,8 +134,10 @@ app.post("/export-cart", async (req, res) => {
   ];
   const positions = [50, 125, 250, 450, 520]; // Adjust positions as necessary
 
+  let headerY = doc.y;
+
   headers.forEach((header, index) => {
-    doc.text(header, positions[index], doc.y, { align: "left" });
+    doc.text(header, positions[index], headerY, { align: "left" });
   });
 
   doc.moveDown(0.5);
@@ -146,12 +148,11 @@ app.post("/export-cart", async (req, res) => {
 
   // Add Table Rows with fixed Y positioning
   const lineHeight = 20; // Adjust the line height as necessary
-  let startY = doc.y;
 
   let totalPrice = 0;
 
   cart.forEach((item, rowIndex) => {
-    const y = startY + lineHeight * (rowIndex + 1);
+    const y = lineY + lineHeight * (rowIndex + 1);
     doc.text(item.sapNumber, positions[0], y, { align: "left" });
     doc.text(item.name, positions[1], y, { align: "left" });
     doc.text(item.size, positions[2], y, { align: "left" });
