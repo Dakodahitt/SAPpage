@@ -27,7 +27,7 @@ const ProductDetail = ({ addToCart }) => {
     const size = event.target.value;
     const sizeDetail = product.sizes.find((s) => s.size === size);
     setSelectedSize(size);
-    setSelectedPrice(sizeDetail.price);
+    setSelectedPrice(sizeDetail ? sizeDetail.price : 0);
   };
 
   const handleAddToCart = () => {

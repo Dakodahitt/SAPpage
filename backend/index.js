@@ -155,7 +155,7 @@ app.post("/export-cart", async (req, res) => {
     doc.text(item.name, positions[1], y, { align: "left" });
     doc.text(item.size, positions[2], y, { align: "left" });
     doc.text(item.sapNumber, positions[3], y, { align: "left" });
-    doc.text(item.price.toFixed(2), positions[4], y, { align: "left" });
+    doc.text(item.price ? item.price.toFixed(2) : 'N/A', positions[4], y, { align: "left" });
     doc.text(item.quantity, positions[5], y, { align: "left" });
 
     totalPrice += item.price * item.quantity;
