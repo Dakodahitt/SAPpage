@@ -124,7 +124,7 @@ app.post("/export-cart", async (req, res) => {
 
   // Add Table Headers
   doc.moveDown(1);
-  const lineHeight = 10;
+
   const headers = [
     "SAP #",
     "Description",
