@@ -62,6 +62,11 @@ const ProductDetail = ({ addToCart }) => {
             ))}
           </select>
         </div>
+        {selectedSize && (
+          <p>
+            Selected Size: {selectedSize} - ${selectedPrice.toFixed(2)}
+          </p>
+        )}
         <button onClick={handleAddToCart} disabled={!selectedSize}>
           Add to Cart
         </button>

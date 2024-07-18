@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import './Products.css';
 
-const Products = ({ addToCart }) => {
+const Products = () => {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
@@ -62,11 +62,7 @@ const Products = ({ addToCart }) => {
               {product.image && <img src={product.image} alt={product.name} />}
             </Link>
             <h2>{product.name}</h2>
-            {product.sizes && product.sizes.map((size, sizeIndex) => (
-              <p key={sizeIndex}>
-                {size.size} - ${size.price ? size.price.toFixed(2) : 'N/A'}
-              </p>
-            ))}
+            <p>Starting at ${Math.min(...product.sizes.map(size => size.price)).toFixed(2)}</p>
             <div>
               <button onClick={() => handleDelete(product.id)}>Delete</button>
             </div>
