@@ -1,67 +1,55 @@
 .product-detail-container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #1e1e1e;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    text-align: center;
-  }
-  
-  .product-detail-container img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  
-  .product-detail-container h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #ffffff;
-  }
-  
-  .product-detail-container p {
-    font-size: 18px;
-    margin-bottom: 20px;
-    color: #cccccc;
-  }
-  
-  .sizes-container {
-    margin-bottom: 20px;
-  }
-  
-  .sizes-container label {
-    display: block;
-    margin-bottom: 5px;
-    color: #ffffff;
-  }
-  
-  .sizes-container select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #333;
-    border-radius: 4px;
-    background-color: #333;
-    color: white;
-    font-size: 16px;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    text-align-last: center;
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSI2Ij48cGF0aCBkPSJNNSAwbDUgNS41LTUgNS41eiIgZmlsbD0iI2ZmZiIgLz48L3N2Zz4=');
-    background-repeat: no-repeat;
-    background-position: calc(100% - 10px) center;
-  }
-  
-  .product-detail-container button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #ff9900;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .product-detail-container button:hover {
-    background-color: #e68a00;
-  }
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.product-detail-container h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.product-detail-container img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.product-detail-container p {
+  margin-bottom: 15px;
+  color: #cccccc;
+}
+
+.product-detail-container label {
+  display: block;
+  margin-bottom: 5px;
+  color: #cccccc;
+}
+
+.product-detail-container select {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background-color: #333;
+  color: white;
+}
+
+.product-detail-container button {
+  background-color: #ff9900;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.product-detail-container button:hover {
+  background-color: #e68a00;
+}
