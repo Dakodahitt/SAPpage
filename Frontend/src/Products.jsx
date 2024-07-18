@@ -60,7 +60,6 @@ const Products = () => {
               {product.image && <img src={product.image} alt={product.name} />}
             </Link>
             <h2>{product.name}</h2>
-            <p>Starting at ${Math.min(...product.sizes.map(size => size.price)).toFixed(2)}</p>
             <div>
               <button onClick={() => handleDelete(product.id)}>Delete</button>
             </div>
