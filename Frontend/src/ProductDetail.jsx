@@ -57,7 +57,7 @@ const ProductDetail = ({ addToCart }) => {
             <option value="">--Select Size--</option>
             {product.sizes.map((size) => (
               <option key={size.size} value={size.size}>
-                {size.size} - ${size.price.toFixed(2)}
+                {size.size} - ${size.price ? size.price.toFixed(2) : 'N/A'}
               </option>
             ))}
           </select>
