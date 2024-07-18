@@ -124,15 +124,15 @@ app.post("/export-cart", async (req, res) => {
 
   // Add Table Headers
   doc.moveDown(1);
+  const lineHeight = 10;
   const headers = [
-    "Item #",
+    "SAP #",
     "Description",
     "Size",
-    "SAP #",
     "Price",
     "Quantity",
   ];
-  const positions = [50, 150, 250, 350, 450, 520]; // Adjust positions as necessary
+  const positions = [50, 125, 250, 450, 520]; // Adjust positions as necessary
 
   headers.forEach((header, index) => {
     doc.text(header, positions[index], doc.y, { align: "left" });
@@ -151,19 +151,18 @@ app.post("/export-cart", async (req, res) => {
 
   cart.forEach((item, rowIndex) => {
     const y = lineY + lineHeight * (rowIndex + 1);
-    doc.text(item.id, positions[0], y, { align: "left" });
+    doc.text(item.sapNumber, positions[0], y, { align: "left" });
     doc.text(item.name, positions[1], y, { align: "left" });
     doc.text(item.size, positions[2], y, { align: "left" });
-    doc.text(item.sapNumber, positions[3], y, { align: "left" });
-    doc.text(item.price !== undefined ? item.price.toFixed(2) : 'N/A', positions[4], y, { align: "left" });
-    doc.text(item.quantity, positions[5], y, { align: "left" });
+    doc.text(item.price !== undefined ? item.price.toFixed(2) : 'N/A', positions[3], y, { align: "left" });
+    doc.text(item.quantity, positions[4], y, { align: "left" });
 
     totalPrice += item.price * item.quantity;
   });
 
   // Add total price at the bottom
   doc.moveDown(2);
-  doc.fontSize(12).text(`Total Price: $${totalPrice.toFixed(2)}`, { align: 'right' });
+  doc.fontSize(12).text(`Total: $${totalPrice.toFixed(2)}`, { align: 'right' });
 
   // Finalize PDF file
   doc.end();
