@@ -49,9 +49,7 @@ const Products = () => {
         />
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value="All">All</option>
-          <option value="Category1">Category1</option>
-          <option value="Category2">Category2</option>
-          <option value="Category3">Category3</option>
+          
         </select>
         <button>Search</button>
       </div>
