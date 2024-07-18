@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import Navbar from './Navbar';
 import './ProductDetail.css';
 
@@ -8,7 +8,6 @@ const ProductDetail = ({ addToCart }) => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState('');
-  const [selectedPrice, setSelectedPrice] = useState('');
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -23,48 +22,53 @@ const ProductDetail = ({ addToCart }) => {
     fetchProduct();
   }, [id]);
 
-  const handleSizeChange = (event) => {
-    const size = event.target.value;
-    const sizeDetail = product.sizes.find((s) => s.size === size);
-    setSelectedSize(size);
-    setSelectedPrice(sizeDetail ? sizeDetail.price : 0);
-  };
-
   const handleAddToCart = () => {
-    const item = {
-      id: product.id,
-      name: product.name,
-      size: selectedSize,
-      sapNumber: product.sizes.find((s) => s.size === selectedSize).sapNumber,
-      price: selectedPrice,
-      quantity: 1,
-    };
-    addToCart(item);
+    if (selectedSize) {
+      const size = product.sizes.find(s => s.size === selectedSize);
+      const itemToAdd = {
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        image: product.image,
+        size: size.size,
+        sapNumber: size.sapNumber,
+        price: size.price,
+        quantity: 1,
+      };
+      addToCart(itemToAdd);
+    } else {
+      alert("Please select a size.");
+    }
   };
 
-  if (!product) return <p>Loading...</p>;
+  if (!product) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <>
       <Navbar />
       <div className="product-detail-container">
-        <h1>{product.name}</h1>
         <img src={product.image} alt={product.name} />
+        <h2>{product.name}</h2>
         <p>{product.description}</p>
-        <div>
-          <label htmlFor="size">Select Size:</label>
-          <select id="size" value={selectedSize} onChange={handleSizeChange}>
-            <option value="">--Select Size--</option>
-            {product.sizes.map((size) => (
-              <option key={size.size} value={size.size}>
-                {size.size} - ${size.price ? size.price.toFixed(2) : 'N/A'}
+        <p>${product.price.toFixed(2)}</p>
+        <div className="sizes-container">
+          <label htmlFor="sizes">Select Size:</label>
+          <select 
+            id="sizes" 
+            value={selectedSize} 
+            onChange={(e) => setSelectedSize(e.target.value)}
+          >
+            <option value="">Select a size</option>
+            {product.sizes.map((size, index) => (
+              <option key={index} value={size.size}>
+                {size.size} (SAP: {size.sapNumber})
               </option>
             ))}
           </select>
         </div>
-        <button onClick={handleAddToCart} disabled={!selectedSize}>
-          Add to Cart
-        </button>
+        <button onClick={handleAddToCart}>Add to Cart</button>
       </div>
     </>
   );
