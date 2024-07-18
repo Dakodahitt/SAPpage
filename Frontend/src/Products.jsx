@@ -23,7 +23,7 @@ const Products = ({ addToCart }) => {
   }, []);
 
   const handleDelete = async (id) => {
-    console.log(`Deleting product with ID: ${id}`); // Log the ID
+    console.log(`Deleting product with ID: ${id}`);
     try {
       await axios.delete(`https://sappage.onrender.com/products/${id}`);
       setProducts(products.filter(product => product.id !== id));
@@ -62,7 +62,11 @@ const Products = ({ addToCart }) => {
               {product.image && <img src={product.image} alt={product.name} />}
             </Link>
             <h2>{product.name}</h2>
-            <p>${product.price.toFixed(2)}</p>
+            {product.sizes && product.sizes.map((size, sizeIndex) => (
+              <p key={sizeIndex}>
+                {size.size} - ${size.price ? size.price.toFixed(2) : 'N/A'}
+              </p>
+            ))}
             <div>
               <button onClick={() => handleDelete(product.id)}>Delete</button>
             </div>
