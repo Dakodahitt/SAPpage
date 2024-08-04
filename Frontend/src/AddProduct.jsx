@@ -82,7 +82,7 @@ const AddProduct = ({ onProductAdded }) => {
             required
           />
 
-          <h3>Sizes</h3>
+<h3>Sizes</h3>
           {sizes.map((size, index) => (
             <div key={index} className="size-container">
               <label>Size</label>
@@ -118,7 +118,44 @@ const AddProduct = ({ onProductAdded }) => {
             <button type="button" onClick={handleAddSize}>
               Add Size
             </button>
+          </div>
 
+          <h3>Styles</h3>
+          {styles.map((style, index) => (
+            <div key={index} className="style-container">
+              <label>Style</label>
+              <input
+                type="text"
+                value={style.style}
+                onChange={(e) => handleStyleChange(index, 'style', e.target.value)}
+                required
+              />
+              <label>SAP Number</label>
+              <input
+                type="text"
+                value={style.sapNumber}
+                onChange={(e) => handleStyleChange(index, 'sapNumber', e.target.value)}
+                required
+              />
+              <label>Price</label>
+              <input
+                type="number"
+                step="0.01"
+                value={style.price}
+                onChange={(e) => handleStyleChange(index, 'price', e.target.value)}
+                required
+              />
+              {styles.length > 1 && (
+                <button type="button" onClick={() => handleRemoveStyle(index)}>
+                  Remove Style
+                </button>
+              )}
+            </div>
+          ))}
+          <div className="button-group">
+            <button type="button" onClick={handleAddStyle}>
+              Add Style
+            </button>
             <button type="submit">Add Product</button>
           </div>
         </form>
